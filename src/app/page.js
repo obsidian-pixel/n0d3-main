@@ -94,8 +94,8 @@ function ParticleText() {
           }
         } else {
           // Apply 3D rotation
-          this.rotationX = (this.mouseY - canvas.height / 2) * -0.0005;
-          this.rotationY = (this.mouseX - canvas.width / 2) * 0.0005;
+          this.rotationX = (this.mouseY - canvas.height / 2) * -0.0008;
+          this.rotationY = (this.mouseX - canvas.width / 2) * 0.0009;
           this.rotate();
         }
       }
