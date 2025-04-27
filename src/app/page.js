@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import styles from "./page.module.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function ParticleText() {
   const canvasRef = useRef(null);
@@ -200,30 +200,39 @@ function ParticleText() {
 }
 
 export default function Home() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <div className={styles.container}>
       <ParticleText />
-      {/* Top Navigation Bar */}
       <nav className={styles.navbar}>
-        <div className={styles.logo}>N0D3</div>
-        <div className={styles.navActions}>
-          <a href="#" className={styles.signupBtn}>
-            SIGN UP
-          </a>
-          <div className={styles.hamburger}>
-            <span></span>
-            <span></span>
-            <span></span>
+        <div className={styles.navContent}>
+          <div className={styles.logo}>N0D3</div>
+          <div className={styles.navActions}>
+            <a href="#" className={styles.signupBtn}>
+              SIGN UP
+            </a>
+            <div
+              className={`${styles.hamburger} ${
+                isMenuOpen ? styles.active : ""
+              }`}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
           </div>
         </div>
       </nav>
 
-      {/* Bottom Bar */}
       <footer className={styles.footer}>
-        <div className={styles.footerLeft}>Learn. Build. Share.</div>
-        <div className={styles.footerLinks}>
-          <a href="#">DISCORD</a>
-          <a href="#">X.COM</a>
+        <div className={styles.footerContent}>
+          <div className={styles.footerLeft}>Learn. Build. Share.</div>
+          <div className={styles.footerLinks}>
+            <a href="#">DISCORD</a>
+            <a href="#">X.COM</a>
+          </div>
         </div>
       </footer>
     </div>
