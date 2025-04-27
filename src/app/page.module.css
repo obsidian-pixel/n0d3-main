@@ -75,17 +75,41 @@
 .footerLinks a {
   color: #fff;
   text-decoration: none;
-  transition: color 0.2s ease;
+  position: relative;
+  padding: 2px 4px;
+  transition: all 0.3s ease;
 }
 
 .footerLinks a:hover {
   color: cyan;
+  transform: translateY(-2px);
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
 }
 
 .navActions {
   display: flex;
   align-items: center;
   gap: 24px;
+}
+
+.signupBtn {
+  background-color: rgba(0, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  padding: 0.6rem 1.8rem;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.signupBtn:hover {
+  background-color: rgba(0, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
 }
 
 .hamburger {
@@ -101,16 +125,13 @@
   width: 24px;
   height: 2px;
   background: #fff;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition: all 0.3s ease;
   transform-origin: center;
-}
-
-.hamburger.active span {
-  background-color: rgb(255, 50, 50);
 }
 
 .hamburger.active span:nth-child(1) {
   transform: translateY(8px) rotate(45deg);
+  background: #ff3333;
 }
 
 .hamburger.active span:nth-child(2) {
@@ -119,46 +140,87 @@
 
 .hamburger.active span:nth-child(3) {
   transform: translateY(-8px) rotate(-45deg);
+  background: #ff3333;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-}
-
-.logo img {
-  height: auto;
-  width: auto;
-  object-fit: contain;
-}
-
-.signupBtn {
-  background-color: rgba(0, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-  padding: 0.6rem 1.8rem;
-  color: white;
-  font-weight: 600;
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
-  text-align: center;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.signupBtn:hover {
-  background-color: rgba(0, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-1px);
-}
-
-.particleCanvas {
+.menuOverlay {
   position: fixed;
   top: 0;
-  left: 0;
-  width: 100vw;
+  right: -400px;
+  width: 400px;
   height: 100vh;
-  z-index: 1;
-  pointer-events: none;
-  background: #000;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(35px);
+  -webkit-backdrop-filter: blur(35px);
+  z-index: 100;
+  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.menuOverlay.active {
+  right: 0;
+}
+
+.menuContent {
+  height: calc(100vh - 80px);
+  margin-top: 80px;
+  overflow-y: auto;
+  padding: 40px 100px 40px 40px;
+}
+
+.menuNav {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.menuSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: right;
+  padding-right: 20px;
+  border-right: 2px solid rgba(0, 255, 255, 0.1);
+}
+
+.menuSectionTitle {
+  color: cyan;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.menuItems {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.menuItem {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 8px 0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.menuItem::after {
+  content: "";
+  position: absolute;
+  right: -22px;
+  top: 0;
+  width: 2px;
+  height: 0;
+  background: cyan;
+  transition: height 0.3s ease;
+}
+
+.menuItem:hover {
+  padding-right: 10px;
+  color: cyan;
+}
+
+.menuItem:hover::after {
+  height: 100%;
 }
