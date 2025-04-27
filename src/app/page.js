@@ -97,6 +97,16 @@ function ParticleText() {
           this.rotationX = (this.mouseY - canvas.height / 2) * -0.0008;
           this.rotationY = (this.mouseX - canvas.width / 2) * 0.0009;
           this.rotate();
+
+          // Slow down current velocity
+          this.dx *= 0.5;
+          this.dy *= 0.5;
+
+          // Very gentle return to original position
+          const dx = (this.origX - this.x) * 0.1;
+          const dy = (this.origY - this.y) * 0.1;
+          this.x += dx;
+          this.y += dy;
         }
       }
     }
@@ -165,7 +175,7 @@ function ParticleText() {
           particle.hoverIntensity = 1 - distance / hoverRadius;
           particle.isHovering = true;
         } else {
-          particle.hoverIntensity = 0;
+          particle.hoverIntensity = -0.1;
           particle.isHovering = false;
         }
         particle.mouseX = mouseX;
