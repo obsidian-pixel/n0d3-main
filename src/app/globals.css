@@ -40,3 +40,27 @@ a {
     color-scheme: dark;
   }
 }
+
+.nod3-navbar,
+.nod3-footer {
+  background: rgba(20, 30, 50, 0.7);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-radius: 16px;
+  margin: 0 24px;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+
+.nod3-navbar {
+  margin-top: 24px;
+}
+
+.nod3-footer {
+  margin-bottom: 24px;
+  font-size: 1.1rem;
+}
