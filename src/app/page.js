@@ -207,7 +207,15 @@ export default function Home() {
       <ParticleText />
       <nav className={styles.navbar}>
         <div className={styles.navContent}>
-          <div className={styles.logo}>N0D3</div>
+          <div className={styles.logo}>
+            <Image
+              src="/navbar-logo.png"
+              alt="N0D3 Logo"
+              width={120}
+              height={40}
+              priority
+            />
+          </div>
           <div className={styles.navActions}>
             <a href="#" className={styles.signupBtn}>
               SIGN UP

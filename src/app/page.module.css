@@ -108,9 +108,14 @@
 }
 
 .logo {
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: auto;
+  width: auto;
+  object-fit: contain;
 }
 
 .signupBtn {
