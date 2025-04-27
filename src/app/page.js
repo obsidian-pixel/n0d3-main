@@ -99,8 +99,8 @@ function ParticleText() {
           this.rotate();
 
           // Slow down current velocity
-          this.dx *= 0.5;
-          this.dy *= 0.5;
+          this.dx *= 1;
+          this.dy *= 1;
 
           // Very gentle return to original position
           const dx = (this.origX - this.x) * 0.1;
@@ -114,7 +114,7 @@ function ParticleText() {
     const createParticles = () => {
       particles = [];
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = "bold 380px Arial";
+      ctx.font = "bold 500px Arial";
       ctx.fillStyle = "white";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -146,6 +146,8 @@ function ParticleText() {
       ctx.shadowBlur = 100;
       ctx.shadowBlur = 25;
       ctx.shadowColor = "cyan";
+      ctx.shadowColor = "cyan";
+      ctx.shadowColor = "cyan";
       ctx.fillStyle = "cyan";
 
       particles.forEach((particle) => {
@@ -163,7 +165,7 @@ function ParticleText() {
     const handleMouseMove = (e) => {
       const mouseX = e.clientX;
       const mouseY = e.clientY;
-      const hoverRadius = 150; // Increased radius
+      const hoverRadius = 200; // Increased radius
 
       particles.forEach((particle) => {
         const dx = mouseX - particle.x;
@@ -175,7 +177,7 @@ function ParticleText() {
           particle.hoverIntensity = 1 - distance / hoverRadius;
           particle.isHovering = true;
         } else {
-          particle.hoverIntensity = -0.1;
+          particle.hoverIntensity = 0;
           particle.isHovering = false;
         }
         particle.mouseX = mouseX;
@@ -203,7 +205,7 @@ export default function Home() {
       <ParticleText />
       {/* Top Navigation Bar */}
       <nav className={styles.navbar}>
-        <div className={styles.logo}>NOD3</div>
+        <div className={styles.logo}>N0D3</div>
         <div className={styles.navActions}>
           <a href="#" className={styles.signupBtn}>
             SIGN UP

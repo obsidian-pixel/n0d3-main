@@ -17,18 +17,25 @@
 
 .navbar {
   position: fixed;
-  top: 24px;
-  left: 24px;
-  right: 24px;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 32px;
-  background: rgba(20, 30, 50, 0.7);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border-radius: 16px;
-  z-index: 10;
+  padding: 1rem 2rem;
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  z-index: 1000;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-image: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 255, 255, 0.5),
+      transparent
+    )
+    1;
 }
 
 .logo {
