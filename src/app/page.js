@@ -113,27 +113,38 @@ function ParticleText() {
 
     const createParticles = () => {
       particles = [];
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = "bold 500px Arial";
-      ctx.fillStyle = "white";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("N0D3", canvas.width / 2, canvas.height / 2);
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const img = new window.Image();
+      img.src = "/navbar-logo.png";
 
-      // Increase spacing for fewer particles
-      for (let y = 0; y < canvas.height; y += 6) {
-        for (let x = 0; x < canvas.width; x += 6) {
-          if (
-            imageData.data[
-              (Math.floor(y) * canvas.width + Math.floor(x)) * 4 + 3
-            ] > 250
-          ) {
-            particles.push(new Particle(x, y));
+      img.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Calculate position to center image
+        const scale = 3; // Adjust scale of logo
+        const imgWidth = img.width * scale;
+        const imgHeight = img.height * scale;
+        const x = (canvas.width - imgWidth) / 2;
+        const y = (canvas.height - imgHeight) / 2;
+
+        // Draw and sample image
+        ctx.drawImage(img, x, y, imgWidth, imgHeight);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+        // Sample pixels for particles
+        for (let y = 0; y < canvas.height; y += 6) {
+          // Reduced spacing for more detail
+          for (let x = 0; x < canvas.width; x += 6) {
+            const index = (Math.floor(y) * canvas.width + Math.floor(x)) * 4;
+            const alpha = imageData.data[index + 3];
+
+            if (alpha > 128) {
+              // Reduced threshold to catch more of the image
+              particles.push(new Particle(x, y));
+            }
           }
         }
-      }
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      };
     };
 
     const animate = () => {
@@ -142,11 +153,7 @@ function ParticleText() {
 
       // Batch render all particles
       ctx.beginPath();
-      ctx.shadowBlur = 50;
-      ctx.shadowBlur = 100;
-      ctx.shadowBlur = 25;
-      ctx.shadowColor = "cyan";
-      ctx.shadowColor = "cyan";
+      ctx.shadowBlur = 35;
       ctx.shadowColor = "cyan";
       ctx.fillStyle = "cyan";
 
