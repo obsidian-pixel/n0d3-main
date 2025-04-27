@@ -42,14 +42,23 @@
 
 .footer {
   position: fixed;
-  bottom: 24px;
+  bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(20, 30, 50, 0.7);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
+  background: rgba(0, 0, 0, 1);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
   z-index: 10;
   color: #fff;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-image: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 255, 255, 0.5),
+      transparent
+    )
+    1;
 }
 
 .footerLeft {
@@ -66,6 +75,11 @@
 .footerLinks a {
   color: #fff;
   text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footerLinks a:hover {
+  color: cyan;
 }
 
 .navActions {
@@ -136,4 +150,15 @@
   background-color: rgba(0, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-1px);
+}
+
+.particleCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  pointer-events: none;
+  background: #000;
 }
