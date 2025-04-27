@@ -161,11 +161,11 @@ function ParticleText() {
       frame = requestAnimationFrame(animate);
     };
 
-    // Handle mouse interaction
+    // Move mouse tracking to window level
     const handleMouseMove = (e) => {
       const mouseX = e.clientX;
       const mouseY = e.clientY;
-      const hoverRadius = 200; // Increased radius
+      const hoverRadius = 200;
 
       particles.forEach((particle) => {
         const dx = mouseX - particle.x;
@@ -173,7 +173,6 @@ function ParticleText() {
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance < hoverRadius) {
-          // Calculate intensity based on distance (1 at center, 0 at edge)
           particle.hoverIntensity = 1 - distance / hoverRadius;
           particle.isHovering = true;
         } else {
@@ -188,12 +187,13 @@ function ParticleText() {
 
     createParticles();
     animate();
-    canvas.addEventListener("mousemove", handleMouseMove);
+    // Change event listener to window
+    window.addEventListener("mousemove", handleMouseMove);
 
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", resizeCanvas);
-      canvas.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mousemove", handleMouseMove); // Update cleanup
     };
   }, []);
   return <canvas ref={canvasRef} className={styles.particleCanvas} />;
