@@ -224,3 +224,109 @@
 .menuItem:hover::after {
   height: 100%;
 }
+
+.carousel {
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+}
+
+.carouselTrack {
+  height: 100%;
+  width: 100%;
+  transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.mainContent {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.heroSection,
+.communitySection,
+.toolsSection {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: black;
+}
+
+.particleCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.slideIndicator {
+  position: fixed;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  z-index: 50;
+}
+
+.indicatorItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0.6; /* Changed from 0.4 to 0.6 for better visibility */
+  transform: translateX(
+    -10px
+  ); /* Changed from -20px to -10px for subtler movement */
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.indicatorItem.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.indicatorLine {
+  width: 12px; /* Changed from 0 to give inactive items a visible line */
+  height: 2px;
+  background: cyan;
+  opacity: 0.3; /* Added opacity for inactive lines */
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.indicatorItem.active .indicatorLine {
+  width: 24px;
+  opacity: 1; /* Full opacity for active line */
+}
+
+.indicatorText {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateX(
+    -5px
+  ); /* Changed from -10px to -5px for subtler movement */
+  opacity: 0.6; /* Changed from 0 to 0.6 to show inactive text */
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.indicatorItem.active .indicatorText {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.indicatorNumber {
+  color: cyan;
+  font-size: 12px;
+  opacity: 0.7;
+}

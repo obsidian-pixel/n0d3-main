@@ -10,9 +10,9 @@ export function ParticleText() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     let particles = [];
+    let arrowParticles = [];
     let frame = 0;
 
-    // Set canvas size
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -91,9 +91,6 @@ export function ParticleText() {
           this.rotationY = (this.mouseX - canvas.width / 2) * 0.0009;
           this.rotate();
 
-          this.dx *= 1;
-          this.dy *= 1;
-
           const dx = (this.origX - this.x) * 0.1;
           const dy = (this.origY - this.y) * 0.1;
           this.x += dx;
@@ -102,8 +99,27 @@ export function ParticleText() {
       }
     }
 
+    class ArrowParticle extends Particle {
+      constructor(x, y) {
+        super(x, y);
+        this.baseY = y;
+        this.amplitude = 1;
+        this.speed = 0.5;
+        this.phase = Math.random() * Math.PI * 5;
+      }
+
+      update() {
+        super.update();
+        if (!this.isHovering) {
+          this.y = this.baseY + Math.sin(this.phase) * this.amplitude;
+          this.phase += this.speed;
+        }
+      }
+    }
+
     const createParticles = () => {
       particles = [];
+      arrowParticles = [];
       const img = new window.Image();
       img.src = "/navbar-logo.png";
 
@@ -114,7 +130,7 @@ export function ParticleText() {
         const imgWidth = img.width * scale;
         const imgHeight = img.height * scale;
         const x = (canvas.width - imgWidth) / 2;
-        const y = (canvas.height - imgHeight) / 2;
+        const y = (canvas.height - imgHeight) / 2 - 50;
 
         ctx.drawImage(img, x, y, imgWidth, imgHeight);
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -129,6 +145,26 @@ export function ParticleText() {
             }
           }
         }
+
+        // Create arrow particles
+        const arrowWidth = 40;
+        const arrowHeight = 40;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height - 150;
+
+        for (let y = 0; y < arrowHeight; y += 3) {
+          for (let x = 0; x < arrowWidth; x += 3) {
+            const relX = x - arrowWidth / 2;
+            const relY = y - arrowHeight / 2;
+
+            if (Math.abs(relX) <= (arrowHeight - y) / 2) {
+              arrowParticles.push(
+                new ArrowParticle(centerX + relX, centerY + relY)
+              );
+            }
+          }
+        }
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       };
     };
@@ -147,17 +183,21 @@ export function ParticleText() {
         particle.draw();
       });
 
-      ctx.fill();
+      arrowParticles.forEach((particle) => {
+        particle.update();
+        particle.draw();
+      });
 
+      ctx.fill();
       frame = requestAnimationFrame(animate);
     };
 
     const handleMouseMove = (e) => {
       const mouseX = e.clientX;
       const mouseY = e.clientY;
-      const hoverRadius = 200;
+      const hoverRadius = 150;
 
-      particles.forEach((particle) => {
+      [...particles, ...arrowParticles].forEach((particle) => {
         const dx = mouseX - particle.x;
         const dy = mouseY - particle.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
