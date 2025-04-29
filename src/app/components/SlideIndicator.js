@@ -2,8 +2,12 @@
 
 import styles from "../page.module.css";
 
-export function SlideIndicator({ currentSection, totalSections }) {
-  const sections = ["HERO", "COMMUNITY", "TOOLS"];
+export function SlideIndicator({
+  currentSection,
+  totalSections,
+  onSectionChange,
+}) {
+  const sections = ["N0D3", "COMMUNITY", "TOOLS"];
 
   return (
     <div className={styles.slideIndicator}>
@@ -13,6 +17,9 @@ export function SlideIndicator({ currentSection, totalSections }) {
           className={`${styles.indicatorItem} ${
             currentSection === index ? styles.active : ""
           }`}
+          onClick={() => onSectionChange(index)}
+          role="button"
+          tabIndex={0}
         >
           <div className={styles.indicatorLine}></div>
           <div className={styles.indicatorText}>

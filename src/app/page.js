@@ -16,12 +16,9 @@ export default function Home() {
       <Navbar isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
 
       <main className={styles.mainContent}>
-        <Carousel>
+        <Carousel isMenuOpen={isMenuOpen}>
           <div className={styles.heroSection}>
             <ParticleText />
-            <div className={styles.scrollIndicator}>
-              <div className={styles.scrollArrow}></div>
-            </div>
           </div>
           <div className={styles.communitySection}>
             <h1>Community Section</h1>

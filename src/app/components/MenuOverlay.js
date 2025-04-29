@@ -40,27 +40,15 @@ export function MenuOverlay({ isOpen, onClose }) {
         <nav className={styles.menuNav}>
           {Object.entries(menuSections).map(
             ([section, items], sectionIndex) => (
-              <div
-                key={section}
-                className={`${styles.menuSection} ${
-                  isOpen ? styles.active : ""
-                }`}
-                style={{ animationDelay: `${sectionIndex * 0.1}s` }}
-              >
+              <div key={section} className={styles.menuSection}>
                 <h2 className={styles.menuSectionTitle}>{section}</h2>
                 <div className={styles.menuItems}>
                   {items.map((item, itemIndex) => (
                     <a
                       key={item}
                       href="#"
-                      className={`${styles.menuItem} ${
-                        isOpen ? styles.active : ""
-                      }`}
-                      style={{
-                        animationDelay: `${
-                          sectionIndex * 0.1 + itemIndex * 0.05
-                        }s`,
-                      }}
+                      className={styles.menuItem}
+                      style={{ "--item-index": itemIndex }}
                       onClick={(e) => {
                         e.preventDefault();
                         onClose();
