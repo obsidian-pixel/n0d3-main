@@ -206,7 +206,7 @@ function ParticleText() {
   return <canvas ref={canvasRef} className={styles.particleCanvas} />;
 }
 
-function MenuOverlay({ isOpen }) {
+function MenuOverlay({ isOpen, onClose }) {
   const menuSections = {
     LEARN: [
       "Frontend Development",
@@ -265,6 +265,10 @@ function MenuOverlay({ isOpen }) {
                           sectionIndex * 0.1 + itemIndex * 0.05
                         }s`,
                       }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onClose();
+                      }}
                     >
                       {item}
                     </a>
@@ -292,8 +296,7 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <ParticleText />
-      <MenuOverlay isOpen={isMenuOpen} />
+      <MenuOverlay isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
       <nav className={styles.navbar}>
         <div className={styles.navContent}>
           <div className={styles.logo}>
@@ -323,9 +326,17 @@ export default function Home() {
         </div>
       </nav>
 
+      <main className={styles.mainContent}>
+        <section className={styles.heroSection}>
+          <ParticleText />
+        </section>
+        <section className={styles.communitySection}></section>
+        <section className={styles.toolsSection}></section>
+      </main>
+
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
-          <div className={styles.footerLeft}>Learn. Build. Share.</div>
+          <div className={styles.footerLeft}>Aspire. Awaken. Amplify.</div>
           <div className={styles.footerLinks}>
             <a href="#">DISCORD</a>
             <a href="#">X.COM</a>
