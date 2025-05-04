@@ -22,19 +22,23 @@ export function ParticleText() {
     const calculateScale = () => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const maxScaleWidth = (vw * 0.9) / 120;
-      const maxScaleHeight = (vh * 0.9) / 40;
+      const maxScaleWidth = (vw * 0.7) / 120; // Reduced from 0.9 to 0.7
+      const maxScaleHeight = (vh * 0.7) / 40; // Reduced from 0.9 to 0.7
 
+      // Extra small screens
+      if (vw <= 360) {
+        return Math.min(maxScaleHeight * 0.25, 0.8); // Much smaller scale
+      }
       // Small screens (mobile)
       if (vw <= 480) {
-        return Math.min(maxScaleHeight * 0.6, 1.5);
+        return Math.min(maxScaleHeight * 0.3, 1.0); // Much smaller scale
       }
       // Medium screens (tablet)
       if (vw <= 768) {
-        return Math.min(maxScaleHeight * 0.7, 1.8);
+        return Math.min(maxScaleHeight * 0.4, 1.2); // Reduced scale
       }
       // Large screens
-      return Math.min(maxScaleWidth, 3);
+      return Math.min(maxScaleWidth, 2.5); // Slightly reduced max scale
     };
 
     class Particle {
@@ -87,7 +91,7 @@ export function ParticleText() {
           this.dx += (Math.random() - 0.5) * 0.8;
           this.dy += (Math.random() - 0.5) * 0.8;
 
-          this.dx = this.dx < -8 ? -8 : this.dx > 8 ? 8 : this.dx;
+          this.dx = this.dx < -8 ? -8 : this.dx > 8 ? 8 : this.dy;
           this.dy = this.dy < -8 ? -8 : this.dy > 8 ? 8 : this.dy;
 
           this.x += this.dx;
@@ -153,7 +157,8 @@ export function ParticleText() {
         const imgHeight = img.height * scale;
 
         const isMobile = window.innerWidth <= 768;
-        const verticalOffset = isMobile ? 100 : 50;
+        // Adjust vertical offset for better centering
+        const verticalOffset = isMobile ? canvas.height * 0.1 : 50; // Changed from -0.05 to 0.1
 
         const x = (canvas.width - imgWidth) / 2;
         const y = (canvas.height - imgHeight) / 2 - verticalOffset;
@@ -187,7 +192,13 @@ export function ParticleText() {
         );
 
         const spacing =
-          window.innerWidth <= 480 ? 3 : window.innerWidth <= 768 ? 4 : 6;
+          window.innerWidth <= 360
+            ? 2
+            : window.innerWidth <= 480
+            ? 2.5
+            : window.innerWidth <= 768
+            ? 3
+            : 6;
 
         for (let y = 0; y < canvas.height; y += spacing) {
           for (let x = 0; x < canvas.width; x += spacing) {
@@ -196,12 +207,14 @@ export function ParticleText() {
 
             if (alpha > 128) {
               const particle = new Particle(x, y);
-              // Adjust particle size based on screen width
+              // Smaller particles for mobile
               particle.size =
-                window.innerWidth <= 480
-                  ? 1.2
+                window.innerWidth <= 360
+                  ? 0.8
+                  : window.innerWidth <= 480
+                  ? 1
                   : window.innerWidth <= 768
-                  ? 1.5
+                  ? 1.2
                   : 2;
               particles.push(particle);
             }
@@ -210,13 +223,26 @@ export function ParticleText() {
 
         // Adjust arrow particles for different screen sizes
         const arrowScale =
-          window.innerWidth <= 480 ? 0.5 : window.innerWidth <= 768 ? 0.7 : 1;
+          window.innerWidth <= 360
+            ? 0.3
+            : window.innerWidth <= 480
+            ? 0.4
+            : window.innerWidth <= 768
+            ? 0.5
+            : 1;
         const arrowWidth = 40 * arrowScale;
         const arrowHeight = 40 * arrowScale;
         const centerX = canvas.width / 2;
-        const centerY = canvas.height - (isMobile ? 100 : 150);
+        // Adjust arrow position to match new text position
+        const centerY = canvas.height - (isMobile ? canvas.height * 0.3 : 150); // Adjusted from 0.25 to 0.3
         const arrowSpacing =
-          window.innerWidth <= 480 ? 1.5 : window.innerWidth <= 768 ? 2 : 3;
+          window.innerWidth <= 360
+            ? 1
+            : window.innerWidth <= 480
+            ? 1.2
+            : window.innerWidth <= 768
+            ? 1.5
+            : 3;
 
         for (let y = 0; y < arrowHeight; y += arrowSpacing) {
           for (let x = 0; x < arrowWidth; x += arrowSpacing) {

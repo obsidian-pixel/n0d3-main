@@ -8,8 +8,8 @@ const roboto = Roboto({
 });
 
 export const metadata = {
-  title: "N0D3 - Learn. Build. Share.",
-  description: "Learn. Build. Share.",
+  title: "N0D3 - Aspire. Awaken. Amplify.",
+  description: "Aspire. Awaken. Amplify.",
 };
 
 export default function RootLayout({ children }) {
