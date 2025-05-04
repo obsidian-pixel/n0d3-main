@@ -12,6 +12,12 @@ export function ParticleText() {
     let particles = [];
     let arrowParticles = [];
     let frame = 0;
+    let gyroEnabled = false;
+
+    // Add gyroscope state
+    let gyroRotationX = 0;
+    let gyroRotationY = 0;
+    const MAX_GYRO_ANGLE = Math.PI / 6; // 30 degrees max tilt
 
     const calculateScale = () => {
       const vw = window.innerWidth;
@@ -97,8 +103,13 @@ export function ParticleText() {
             this.dy *= -0.6;
           }
         } else {
-          this.rotationX = (this.mouseY - canvas.height / 2) * -0.0008;
-          this.rotationY = (this.mouseX - canvas.width / 2) * 0.0009;
+          // Combine mouse and gyroscope rotation
+          this.rotationX =
+            (this.mouseY - canvas.height / 2) * -0.0008 +
+            (gyroEnabled ? gyroRotationX : 0);
+          this.rotationY =
+            (this.mouseX - canvas.width / 2) * 0.0009 +
+            (gyroEnabled ? gyroRotationY : 0);
           this.rotate();
 
           const dx = (this.origX - this.x) * 0.1;
@@ -279,6 +290,57 @@ export function ParticleText() {
       });
     };
 
+    const handleDeviceOrientation = (event) => {
+      if (!event.gamma || !event.beta) return;
+
+      // Convert degrees to radians and normalize
+      gyroRotationX = -((event.beta * Math.PI) / 180) * 0.1; // Front/back tilt
+      gyroRotationY = ((event.gamma * Math.PI) / 180) * 0.1; // Left/right tilt
+
+      // Clamp values
+      gyroRotationX = Math.max(
+        Math.min(gyroRotationX, MAX_GYRO_ANGLE),
+        -MAX_GYRO_ANGLE
+      );
+      gyroRotationY = Math.max(
+        Math.min(gyroRotationY, MAX_GYRO_ANGLE),
+        -MAX_GYRO_ANGLE
+      );
+    };
+
+    const requestGyroPermission = async () => {
+      if (
+        typeof DeviceOrientationEvent !== "undefined" &&
+        typeof DeviceOrientationEvent.requestPermission === "function"
+      ) {
+        try {
+          const permission = await DeviceOrientationEvent.requestPermission();
+          if (permission === "granted") {
+            window.addEventListener(
+              "deviceorientation",
+              handleDeviceOrientation
+            );
+            gyroEnabled = true;
+          }
+        } catch (error) {
+          console.log("Gyroscope permission denied");
+        }
+      } else if (window.DeviceOrientationEvent) {
+        // For non-iOS devices that support deviceorientation
+        window.addEventListener("deviceorientation", handleDeviceOrientation);
+        gyroEnabled = true;
+      }
+    };
+
+    // Request gyroscope permission on mobile devices
+    if (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      )
+    ) {
+      requestGyroPermission();
+    }
+
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
     window.addEventListener("mousemove", handleMouseMove);
@@ -289,6 +351,12 @@ export function ParticleText() {
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", resizeCanvas);
       window.removeEventListener("mousemove", handleMouseMove);
+      if (gyroEnabled) {
+        window.removeEventListener(
+          "deviceorientation",
+          handleDeviceOrientation
+        );
+      }
     };
   }, []);
 
