@@ -6,7 +6,7 @@
 }
 
 .wrapper {
-  padding: 0 100px;
+  padding: 0 var(--container-padding);
   width: 100%;
   height: 100%;
 }
@@ -32,9 +32,9 @@
 }
 
 .navContent {
-  max-width: 100%;
+  max-width: var(--max-width);
   margin: 0 auto;
-  padding: 1rem 100px;
+  padding: 1rem var(--container-padding);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -43,19 +43,19 @@
 .navActions {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: clamp(16px, 2vw, 24px);
 }
 
 .signupBtn {
   background-color: rgba(0, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 10px;
-  padding: 0.6rem 1.8rem;
+  padding: clamp(0.4rem, 1vw, 0.6rem) clamp(1rem, 2vw, 1.8rem);
   color: white;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
   letter-spacing: 0.5px;
-  text-decoration: none;
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
@@ -103,6 +103,7 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  margin-top: var(--navbar-height);
 }
 
 .carouselTrack {
@@ -113,33 +114,33 @@
 .heroSection,
 .communitySection,
 .toolsSection {
-  height: 100vh;
+  height: calc(100vh - var(--navbar-height) - var(--footer-height));
   width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: clamp(1rem, 5vh, 3rem) var(--container-padding);
 }
 
 /* Slide Indicator Styles */
 .slideIndicator {
   position: fixed;
-  left: 40px;
+  left: clamp(16px, 3vw, 40px);
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: clamp(20px, 4vh, 32px);
   z-index: 50;
 }
 
 .indicatorItem {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: clamp(8px, 1vw, 12px);
   opacity: 0.4;
-  transform: translateX(-10px);
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease;
   cursor: pointer;
 }
 
@@ -167,12 +168,10 @@
 
 .indicatorText {
   color: white;
-  font-size: 14px;
+  font-size: clamp(11px, 1.5vw, 14px);
   font-weight: 500;
   letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  white-space: nowrap;
 }
 
 .indicatorNumber {
@@ -211,37 +210,29 @@
 }
 
 .menuNav {
-  max-width: 1200px;
+  max-width: min(1200px, 90vw);
   width: 100%;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 60px;
-  padding: 60px;
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+  gap: clamp(32px, 5vh, 60px);
+  padding: clamp(24px, 5vh, 60px);
   position: relative;
 }
 
 .menuSection {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
+  gap: clamp(16px, 2vh, 24px);
 }
 
 .menuSectionTitle {
   color: cyan;
-  font-size: 16px;
+  font-size: clamp(13px, 1.5vw, 16px);
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
-  position: relative;
-  display: inline-block;
-  margin-bottom: 30px;
-  padding-bottom: 12px;
-  transform: translateY(-10px);
-  opacity: 0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  align-self: flex-start;
+  margin-bottom: clamp(16px, 3vh, 30px);
 }
 
 .menuSectionTitle::after {
@@ -258,7 +249,7 @@
 .menuItems {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: clamp(12px, 2vh, 16px);
   width: 100%;
   align-items: flex-start;
 }
@@ -266,8 +257,8 @@
 .menuItem {
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
-  font-size: 15px;
-  padding: 8px 16px;
+  font-size: clamp(13px, 1.5vw, 15px);
+  padding: clamp(6px, 1vh, 8px) clamp(10px, 2vw, 16px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   opacity: 0;
@@ -411,30 +402,32 @@
 }
 
 .footerContent {
-  max-width: 100%;
+  max-width: var(--max-width);
   margin: 0 auto;
-  padding: 1rem 100px;
+  padding: 1rem var(--container-padding);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: clamp(16px, 3vw, 24px);
 }
 
 .footerLeft {
   color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
   letter-spacing: 1px;
 }
 
 .footerLinks {
   display: flex;
-  gap: 24px;
+  gap: clamp(12px, 2vw, 24px);
 }
 
 .footerLinks a {
   color: rgba(255, 255, 255, 0.8);
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 1.5vw, 0.85rem);
   font-weight: 600;
   letter-spacing: 1px;
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
@@ -446,4 +439,66 @@
 .menuOverlay.active .menuSectionTitle {
   opacity: 1;
   transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .slideIndicator {
+    flex-direction: row;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: calc(var(--footer-height) + 20px);
+    transform: none;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 12px;
+  }
+
+  .indicatorItem {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .indicatorText {
+    writing-mode: horizontal-tb;
+    text-align: center;
+  }
+
+  .footerContent {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .menuNav {
+    padding: 20px 16px;
+  }
+
+  .menuContent {
+    padding-top: 80px;
+  }
+
+  .menuItem {
+    padding: 6px 12px;
+  }
+
+  .signupBtn {
+    padding: 0.4rem 1rem;
+  }
+}
+
+/* Handle landscape orientation */
+@media (max-height: 500px) {
+  .slideIndicator {
+    display: none;
+  }
+
+  .menuContent {
+    padding: 20px 0;
+  }
+
+  .menuNav {
+    gap: 24px;
+  }
 }

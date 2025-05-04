@@ -13,13 +13,23 @@ export function ParticleText() {
     let arrowParticles = [];
     let frame = 0;
 
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
+    const calculateScale = () => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const maxScaleWidth = (vw * 0.9) / 120;
+      const maxScaleHeight = (vh * 0.9) / 40;
 
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+      // Small screens (mobile)
+      if (vw <= 480) {
+        return Math.min(maxScaleHeight * 0.6, 1.5);
+      }
+      // Medium screens (tablet)
+      if (vw <= 768) {
+        return Math.min(maxScaleHeight * 0.7, 1.8);
+      }
+      // Large screens
+      return Math.min(maxScaleWidth, 3);
+    };
 
     class Particle {
       constructor(x, y) {
@@ -126,47 +136,101 @@ export function ParticleText() {
       img.onload = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const scale = 3;
+        const scale = calculateScale();
         const imgWidth = img.width * scale;
         const imgHeight = img.height * scale;
+
+        const isMobile = window.innerWidth <= 768;
+        const verticalOffset = isMobile ? 100 : 50;
+
         const x = (canvas.width - imgWidth) / 2;
-        const y = (canvas.height - imgHeight) / 2 - 50;
+        const y = (canvas.height - imgHeight) / 2 - verticalOffset;
 
-        ctx.drawImage(img, x, y, imgWidth, imgHeight);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const offscreenCanvas = document.createElement("canvas");
+        const offscreenCtx = offscreenCanvas.getContext("2d");
+        offscreenCanvas.width = canvas.width;
+        offscreenCanvas.height = canvas.height;
 
-        for (let y = 0; y < canvas.height; y += 6) {
-          for (let x = 0; x < canvas.width; x += 6) {
+        if (isMobile) {
+          offscreenCtx.save();
+          offscreenCtx.translate(x + imgWidth / 2, y + imgHeight / 2);
+          offscreenCtx.rotate(Math.PI / 2);
+          offscreenCtx.drawImage(
+            img,
+            -imgWidth / 2,
+            -imgHeight / 2,
+            imgWidth,
+            imgHeight
+          );
+          offscreenCtx.restore();
+        } else {
+          offscreenCtx.drawImage(img, x, y, imgWidth, imgHeight);
+        }
+
+        const imageData = offscreenCtx.getImageData(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        const spacing =
+          window.innerWidth <= 480 ? 3 : window.innerWidth <= 768 ? 4 : 6;
+
+        for (let y = 0; y < canvas.height; y += spacing) {
+          for (let x = 0; x < canvas.width; x += spacing) {
             const index = (Math.floor(y) * canvas.width + Math.floor(x)) * 4;
             const alpha = imageData.data[index + 3];
 
             if (alpha > 128) {
-              particles.push(new Particle(x, y));
+              const particle = new Particle(x, y);
+              // Adjust particle size based on screen width
+              particle.size =
+                window.innerWidth <= 480
+                  ? 1.2
+                  : window.innerWidth <= 768
+                  ? 1.5
+                  : 2;
+              particles.push(particle);
             }
           }
         }
 
-        // Create arrow particles
-        const arrowWidth = 40;
-        const arrowHeight = 40;
+        // Adjust arrow particles for different screen sizes
+        const arrowScale =
+          window.innerWidth <= 480 ? 0.5 : window.innerWidth <= 768 ? 0.7 : 1;
+        const arrowWidth = 40 * arrowScale;
+        const arrowHeight = 40 * arrowScale;
         const centerX = canvas.width / 2;
-        const centerY = canvas.height - 150;
+        const centerY = canvas.height - (isMobile ? 100 : 150);
+        const arrowSpacing =
+          window.innerWidth <= 480 ? 1.5 : window.innerWidth <= 768 ? 2 : 3;
 
-        for (let y = 0; y < arrowHeight; y += 3) {
-          for (let x = 0; x < arrowWidth; x += 3) {
+        for (let y = 0; y < arrowHeight; y += arrowSpacing) {
+          for (let x = 0; x < arrowWidth; x += arrowSpacing) {
             const relX = x - arrowWidth / 2;
             const relY = y - arrowHeight / 2;
 
             if (Math.abs(relX) <= (arrowHeight - y) / 2) {
-              arrowParticles.push(
-                new ArrowParticle(centerX + relX, centerY + relY)
+              const particle = new ArrowParticle(
+                centerX + relX,
+                centerY + relY
               );
+              particle.size = isMobile ? 1.5 : 2;
+              particle.amplitude = isMobile ? 0.7 : 1;
+              arrowParticles.push(particle);
             }
           }
         }
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       };
+    };
+
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      createParticles();
     };
 
     const animate = () => {
@@ -215,9 +279,11 @@ export function ParticleText() {
       });
     };
 
-    createParticles();
-    animate();
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
     window.addEventListener("mousemove", handleMouseMove);
+
+    animate();
 
     return () => {
       cancelAnimationFrame(frame);
