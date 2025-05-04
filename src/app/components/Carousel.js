@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styles from "../page.module.css";
 import { SlideIndicator } from "./SlideIndicator";
 
@@ -9,13 +9,16 @@ export function Carousel({ children, isMenuOpen }) {
   const [isScrolling, setIsScrolling] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
 
-  const handleSectionChange = (sectionIndex) => {
-    if (isScrolling || isMenuOpen) return;
+  const handleSectionChange = useCallback(
+    (sectionIndex) => {
+      if (isScrolling || isMenuOpen || sectionIndex === currentSection) return;
 
-    setIsScrolling(true);
-    setCurrentSection(sectionIndex);
-    setTimeout(() => setIsScrolling(false), 800);
-  };
+      setIsScrolling(true);
+      setCurrentSection(sectionIndex);
+      setTimeout(() => setIsScrolling(false), 800);
+    },
+    [isScrolling, isMenuOpen, currentSection]
+  );
 
   useEffect(() => {
     const handleWheel = (e) => {
@@ -87,22 +90,21 @@ export function Carousel({ children, isMenuOpen }) {
   }, [currentSection, children.length, isScrolling, isMenuOpen, touchStart]);
 
   return (
-    <>
+    <div className={styles.carousel}>
+      <div
+        className={styles.carouselTrack}
+        style={{
+          transform: `translateY(-${currentSection * 100}vh)`,
+          transition: "transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1)",
+        }}
+      >
+        {children}
+      </div>
       <SlideIndicator
         currentSection={currentSection}
         totalSections={children.length}
         onSectionChange={handleSectionChange}
       />
-      <div className={styles.carousel}>
-        <div
-          className={styles.carouselTrack}
-          style={{
-            transform: `translateY(-${currentSection * 100}vh)`,
-          }}
-        >
-          {children}
-        </div>
-      </div>
-    </>
+    </div>
   );
 }

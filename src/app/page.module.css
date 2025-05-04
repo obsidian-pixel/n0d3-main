@@ -123,63 +123,6 @@
   padding: clamp(1rem, 5vh, 3rem) var(--container-padding);
 }
 
-/* Slide Indicator Styles */
-.slideIndicator {
-  position: fixed;
-  left: clamp(16px, 3vw, 40px);
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: clamp(20px, 4vh, 32px);
-  z-index: 50;
-}
-
-.indicatorItem {
-  display: flex;
-  align-items: center;
-  gap: clamp(8px, 1vw, 12px);
-  opacity: 0.4;
-  transition: opacity 0.3s ease;
-  cursor: pointer;
-}
-
-.indicatorItem:hover {
-  opacity: 0.8;
-}
-
-.indicatorItem.active {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.indicatorLine {
-  width: 12px;
-  height: 2px;
-  background: cyan;
-  opacity: 0.3;
-  transition: all 0.3s ease;
-}
-
-.indicatorItem.active .indicatorLine {
-  width: 24px;
-  opacity: 1;
-}
-
-.indicatorText {
-  color: white;
-  font-size: clamp(11px, 1.5vw, 14px);
-  font-weight: 500;
-  letter-spacing: 1px;
-  white-space: nowrap;
-}
-
-.indicatorNumber {
-  color: cyan;
-  font-size: 12px;
-  opacity: 0.7;
-}
-
 .menuOverlay {
   position: fixed;
   top: 0;
@@ -442,28 +385,6 @@
 }
 
 @media (max-width: 768px) {
-  .slideIndicator {
-    flex-direction: row;
-    left: 0;
-    right: 0;
-    top: auto;
-    bottom: calc(var(--footer-height) + 20px);
-    transform: none;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.5);
-    padding: 12px;
-  }
-
-  .indicatorItem {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .indicatorText {
-    writing-mode: horizontal-tb;
-    text-align: center;
-  }
-
   .footerContent {
     flex-direction: column;
     text-align: center;
@@ -490,10 +411,6 @@
 
 /* Handle landscape orientation */
 @media (max-height: 500px) {
-  .slideIndicator {
-    display: none;
-  }
-
   .menuContent {
     padding: 20px 0;
   }
@@ -501,4 +418,150 @@
   .menuNav {
     gap: 24px;
   }
+}
+
+.slideIndicator {
+  position: fixed;
+  left: 50%;
+  top: calc(var(--navbar-height) + 16px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  gap: clamp(32px, 4vw, 48px);
+  z-index: 50;
+}
+
+.indicatorItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(4px, 0.8vh, 8px);
+  opacity: 0.4;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  padding: 4px;
+  position: relative;
+}
+
+.indicatorItem:hover {
+  opacity: 0.8;
+}
+
+.indicatorItem.active {
+  opacity: 1;
+}
+
+.indicatorLine {
+  width: 24px;
+  height: 2px;
+  background: cyan;
+  margin-top: 2px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.indicatorItem:hover .indicatorLine,
+.indicatorItem.active .indicatorLine {
+  width: 100%;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+.indicatorText {
+  color: #fff;
+  font-size: clamp(12px, 1.2vw, 14px);
+  letter-spacing: 1px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  white-space: nowrap;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.indicatorNumber {
+  color: cyan;
+  opacity: 0.8;
+  font-size: 0.9em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.indicatorItem:hover .indicatorNumber {
+  opacity: 1;
+}
+
+.indicatorItem.active .indicatorNumber {
+  opacity: 1;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+.indicatorItem:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .slideIndicator {
+    gap: clamp(24px, 3vw, 32px);
+  }
+
+  .indicatorText {
+    font-size: 11px;
+  }
+
+  .indicatorLine {
+    width: 20px;
+  }
+
+  .indicatorItem:hover .indicatorLine,
+  .indicatorItem.active .indicatorLine {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .slideIndicator {
+    gap: 16px;
+  }
+
+  .indicatorText {
+    font-size: 10px;
+  }
+
+  .indicatorLine {
+    width: 16px;
+  }
+}
+
+.indicatorItem.animating {
+  animation: sectionChange 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: var(--transition-delay);
+}
+
+@keyframes sectionChange {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.indicatorItem:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.indicatorItem:hover .indicatorText,
+.indicatorItem:focus-visible .indicatorText {
+  letter-spacing: 1.2px;
+  transform: scale(1.05);
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.indicatorItem:active .indicatorText {
+  transform: scale(0.95);
 }

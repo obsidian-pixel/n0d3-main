@@ -10,7 +10,6 @@ export function ParticleText() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     let particles = [];
-    let arrowParticles = [];
     let frame = 0;
     let gyroEnabled = false;
 
@@ -59,6 +58,9 @@ export function ParticleText() {
         this.hoverRadius = 0;
         this.hoverIntensity = 0;
         this.isHovering = false;
+        this.explosionSpeed = Math.random() * 2 + 1;
+        this.friction = 0.95;
+        this.gravity = 0.2;
       }
 
       rotate() {
@@ -88,64 +90,72 @@ export function ParticleText() {
 
       update() {
         if (this.hoverIntensity > 0) {
-          this.dx += (Math.random() - 0.5) * 0.8;
-          this.dy += (Math.random() - 0.5) * 0.8;
-
-          this.dx = this.dx < -8 ? -8 : this.dx > 8 ? 8 : this.dy;
-          this.dy = this.dy < -8 ? -8 : this.dy > 8 ? 8 : this.dy;
-
-          this.x += this.dx;
-          this.y += this.dy;
-
+          // Calculate distance from mouse
           const dx = this.x - this.mouseX;
           const dy = this.y - this.mouseY;
-          if (dx * dx + dy * dy > this.hoverRadius * this.hoverRadius) {
-            const angle = Math.atan2(dy, dx);
-            this.x = this.mouseX + Math.cos(angle) * this.hoverRadius;
-            this.y = this.mouseY + Math.sin(angle) * this.hoverRadius;
-            this.dx *= -0.6;
-            this.dy *= -0.6;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          // Add randomized explosion velocity, scaled by hover intensity and contained within radius
+          if (distance < this.hoverRadius) {
+            this.dx +=
+              (Math.random() - 0.5) * this.explosionSpeed * this.hoverIntensity;
+            this.dy +=
+              (Math.random() - 0.5) * this.explosionSpeed * this.hoverIntensity;
+
+            // Apply velocity limits
+            const maxSpeed = 8 * this.hoverIntensity;
+            this.dx = Math.min(Math.max(this.dx, -maxSpeed), maxSpeed);
+            this.dy = Math.min(Math.max(this.dy, -maxSpeed), maxSpeed);
+
+            // Apply friction
+            this.dx *= this.friction;
+            this.dy *= this.friction;
+
+            // Update position
+            this.x += this.dx;
+            this.y += this.dy;
+
+            // Contain particles within hover radius
+            const newDx = this.x - this.mouseX;
+            const newDy = this.y - this.mouseY;
+            const newDistance = Math.sqrt(newDx * newDx + newDy * newDy);
+
+            if (newDistance > this.hoverRadius) {
+              const angle = Math.atan2(newDy, newDx);
+              this.x = this.mouseX + Math.cos(angle) * this.hoverRadius;
+              this.y = this.mouseY + Math.sin(angle) * this.hoverRadius;
+
+              // Bounce effect
+              const normalX = Math.cos(angle);
+              const normalY = Math.sin(angle);
+              const dot = this.dx * normalX + this.dy * normalY;
+              this.dx = this.dx - 2 * dot * normalX;
+              this.dy = this.dy - 2 * dot * normalY;
+              this.dx *= 0.5; // Reduce bounce velocity
+              this.dy *= 0.5;
+            }
           }
         } else {
-          // Combine mouse and gyroscope rotation with increased intensity
+          // Normal non-hover behavior
           this.rotationX =
             (this.mouseY - canvas.height / 2) * -0.0008 +
-            (gyroEnabled ? gyroRotationX * 1.5 : 0); // Added multiplier
+            (gyroEnabled ? gyroRotationX * 1.5 : 0);
           this.rotationY =
             (this.mouseX - canvas.width / 2) * 0.0009 +
-            (gyroEnabled ? gyroRotationY * 1.5 : 0); // Added multiplier
+            (gyroEnabled ? gyroRotationY * 1.5 : 0);
           this.rotate();
 
-          // Make position updates more responsive
-          const dx = (this.origX - this.x) * 0.15; // Increased from 0.1 to 0.15
-          const dy = (this.origY - this.y) * 0.15; // Increased from 0.1 to 0.15
+          // Smooth return to original position
+          const dx = (this.origX - this.x) * 0.08;
+          const dy = (this.origY - this.y) * 0.08;
           this.x += dx;
           this.y += dy;
         }
       }
     }
 
-    class ArrowParticle extends Particle {
-      constructor(x, y) {
-        super(x, y);
-        this.baseY = y;
-        this.amplitude = 1;
-        this.speed = 0.5;
-        this.phase = Math.random() * Math.PI * 5;
-      }
-
-      update() {
-        super.update();
-        if (!this.isHovering) {
-          this.y = this.baseY + Math.sin(this.phase) * this.amplitude;
-          this.phase += this.speed;
-        }
-      }
-    }
-
     const createParticles = () => {
       particles = [];
-      arrowParticles = [];
       const img = new window.Image();
       img.src = "/navbar-logo.png";
 
@@ -221,46 +231,6 @@ export function ParticleText() {
           }
         }
 
-        // Adjust arrow particles for different screen sizes
-        const arrowScale =
-          window.innerWidth <= 360
-            ? 0.3
-            : window.innerWidth <= 480
-            ? 0.4
-            : window.innerWidth <= 768
-            ? 0.5
-            : 1;
-        const arrowWidth = 40 * arrowScale;
-        const arrowHeight = 40 * arrowScale;
-        const centerX = canvas.width / 2;
-        // Adjust arrow position to match new text position
-        const centerY = canvas.height - (isMobile ? canvas.height * 0.3 : 150); // Adjusted from 0.25 to 0.3
-        const arrowSpacing =
-          window.innerWidth <= 360
-            ? 1
-            : window.innerWidth <= 480
-            ? 1.2
-            : window.innerWidth <= 768
-            ? 1.5
-            : 3;
-
-        for (let y = 0; y < arrowHeight; y += arrowSpacing) {
-          for (let x = 0; x < arrowWidth; x += arrowSpacing) {
-            const relX = x - arrowWidth / 2;
-            const relY = y - arrowHeight / 2;
-
-            if (Math.abs(relX) <= (arrowHeight - y) / 2) {
-              const particle = new ArrowParticle(
-                centerX + relX,
-                centerY + relY
-              );
-              particle.size = isMobile ? 1.5 : 2;
-              particle.amplitude = isMobile ? 0.7 : 1;
-              arrowParticles.push(particle);
-            }
-          }
-        }
-
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       };
     };
@@ -285,11 +255,6 @@ export function ParticleText() {
         particle.draw();
       });
 
-      arrowParticles.forEach((particle) => {
-        particle.update();
-        particle.draw();
-      });
-
       ctx.fill();
       frame = requestAnimationFrame(animate);
     };
@@ -297,19 +262,22 @@ export function ParticleText() {
     const handleMouseMove = (e) => {
       const mouseX = e.clientX;
       const mouseY = e.clientY;
-      const hoverRadius = 150;
+      const hoverRadius = 180; // Increased from 150
 
-      [...particles, ...arrowParticles].forEach((particle) => {
+      particles.forEach((particle) => {
         const dx = mouseX - particle.x;
         const dy = mouseY - particle.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance < hoverRadius) {
-          particle.hoverIntensity = 1 - distance / hoverRadius;
+          particle.hoverIntensity = Math.pow(1 - distance / hoverRadius, 2); // Quadratic falloff
           particle.isHovering = true;
         } else {
-          particle.hoverIntensity = 0;
-          particle.isHovering = false;
+          particle.hoverIntensity *= 0.95; // Smooth transition out
+          if (particle.hoverIntensity < 0.01) {
+            particle.hoverIntensity = 0;
+            particle.isHovering = false;
+          }
         }
         particle.mouseX = mouseX;
         particle.mouseY = mouseY;
