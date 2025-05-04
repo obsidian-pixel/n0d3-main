@@ -14,10 +14,10 @@ export function ParticleText() {
     let frame = 0;
     let gyroEnabled = false;
 
-    // Add gyroscope state with increased sensitivity
+    // Add gyroscope state with significantly increased sensitivity
     let gyroRotationX = 0;
     let gyroRotationY = 0;
-    const MAX_GYRO_ANGLE = Math.PI / 4; // Increased to 45 degrees max tilt
+    const MAX_GYRO_ANGLE = Math.PI / 3; // Increased to 60 degrees max tilt
 
     const calculateScale = () => {
       const vw = window.innerWidth;
@@ -103,17 +103,18 @@ export function ParticleText() {
             this.dy *= -0.6;
           }
         } else {
-          // Combine mouse and gyroscope rotation
+          // Combine mouse and gyroscope rotation with increased intensity
           this.rotationX =
             (this.mouseY - canvas.height / 2) * -0.0008 +
-            (gyroEnabled ? gyroRotationX : 0);
+            (gyroEnabled ? gyroRotationX * 1.5 : 0); // Added multiplier
           this.rotationY =
             (this.mouseX - canvas.width / 2) * 0.0009 +
-            (gyroEnabled ? gyroRotationY : 0);
+            (gyroEnabled ? gyroRotationY * 1.5 : 0); // Added multiplier
           this.rotate();
 
-          const dx = (this.origX - this.x) * 0.1;
-          const dy = (this.origY - this.y) * 0.1;
+          // Make position updates more responsive
+          const dx = (this.origX - this.x) * 0.15; // Increased from 0.1 to 0.15
+          const dy = (this.origY - this.y) * 0.15; // Increased from 0.1 to 0.15
           this.x += dx;
           this.y += dy;
         }
@@ -294,8 +295,8 @@ export function ParticleText() {
       if (!event.gamma || !event.beta) return;
 
       // Convert degrees to radians and normalize with increased multiplier
-      gyroRotationX = -((event.beta * Math.PI) / 180) * 0.25; // Increased from 0.1 to 0.25
-      gyroRotationY = ((event.gamma * Math.PI) / 180) * 0.25; // Increased from 0.1 to 0.25
+      gyroRotationX = -((event.beta * Math.PI) / 180) * 0.4; // Increased from 0.25 to 0.4
+      gyroRotationY = ((event.gamma * Math.PI) / 180) * 0.4; // Increased from 0.25 to 0.4
 
       // Clamp values to new max angle
       gyroRotationX = Math.max(
