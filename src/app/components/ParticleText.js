@@ -14,10 +14,10 @@ export function ParticleText() {
     let frame = 0;
     let gyroEnabled = false;
 
-    // Add gyroscope state
+    // Add gyroscope state with increased sensitivity
     let gyroRotationX = 0;
     let gyroRotationY = 0;
-    const MAX_GYRO_ANGLE = Math.PI / 6; // 30 degrees max tilt
+    const MAX_GYRO_ANGLE = Math.PI / 4; // Increased to 45 degrees max tilt
 
     const calculateScale = () => {
       const vw = window.innerWidth;
@@ -293,11 +293,11 @@ export function ParticleText() {
     const handleDeviceOrientation = (event) => {
       if (!event.gamma || !event.beta) return;
 
-      // Convert degrees to radians and normalize
-      gyroRotationX = -((event.beta * Math.PI) / 180) * 0.1; // Front/back tilt
-      gyroRotationY = ((event.gamma * Math.PI) / 180) * 0.1; // Left/right tilt
+      // Convert degrees to radians and normalize with increased multiplier
+      gyroRotationX = -((event.beta * Math.PI) / 180) * 0.25; // Increased from 0.1 to 0.25
+      gyroRotationY = ((event.gamma * Math.PI) / 180) * 0.25; // Increased from 0.1 to 0.25
 
-      // Clamp values
+      // Clamp values to new max angle
       gyroRotationX = Math.max(
         Math.min(gyroRotationX, MAX_GYRO_ANGLE),
         -MAX_GYRO_ANGLE
